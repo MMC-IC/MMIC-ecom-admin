@@ -177,7 +177,7 @@ const AddBrand = () => {
   const columns = [
     {
       field: "id",
-      headerName: "Brand ID",
+      headerName: "Brand Code",
       minWidth: 100,
       flex: 0.5,
     },
