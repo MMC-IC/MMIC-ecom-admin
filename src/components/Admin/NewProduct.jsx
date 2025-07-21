@@ -45,9 +45,9 @@ const NewProduct = () => {
   /* const [logo, setLogo] = useState("");
   const [logoPreview, setLogoPreview] = useState(""); */
   const tagsList = [
-    "Best Seller",
     "New Arrival",
-    "Future Products",
+    "Best Seller",
+    "Feature Products",
     "Limited Stock",
     "Assured",
     "Top Rated",
@@ -199,6 +199,14 @@ const NewProduct = () => {
     //   enqueueSnackbar("Enter Youtube link", { variant: "warning" });
     //   return;
     // }
+    if (!price) {
+      enqueueSnackbar("Enter Price", { variant: "warning" });
+      return;
+    }
+    if (!baseStock || baseStock < 0) {
+      enqueueSnackbar("Enter valid stock", { variant: "warning" });
+      return;
+    }
     if (!moreLink) {
       enqueueSnackbar("Enter More link", { variant: "warning" });
       return;
@@ -508,7 +516,7 @@ const NewProduct = () => {
                     <input
                       type="checkbox"
                       value={tag}
-                      checked={tags.includes(tag)}
+                      checked={tag === 'New Arrival' ? true : tags.includes(tag)}
                       onChange={handleTagChange}
                       className="accent-primary-blue"
                     />

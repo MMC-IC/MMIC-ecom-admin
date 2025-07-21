@@ -30,7 +30,7 @@ const Header = () => {
     <header className="bg-primary-blue fixed top-0 py-2.5 w-full z-10">
       {/* <!-- navbar shadow --> */}
       {/* <!-- navbar container --> */}
-      <div className="w-full sm:w-9/12 px-1 sm:px-4 m-auto flex justify-between items-center relative">
+      <div className="w-full px-1 sm:px-4 flex justify-between items-center relative">
 
         {/* <!-- logo & search container --> */}
         <div className="flex items-center flex-1">

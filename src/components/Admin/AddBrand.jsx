@@ -56,6 +56,10 @@ const AddBrand = () => {
   const [brandInput, setBrandInput] = useState({ name: "", logo: null });
 
   useEffect(() => {
+    dispatch(getAdminBrands());
+  }, []);
+
+  useEffect(() => {
     if (error) {
       enqueueSnackbar(error, { variant: "error" });
       dispatch(clearErrors());
@@ -214,7 +218,7 @@ const AddBrand = () => {
 
   const rows =
     brands?.map((item) => ({
-      id: item._id,
+      id: item.brand_code,
       name: item.name,
       image: item.logo?.url,
     })) ?? [];

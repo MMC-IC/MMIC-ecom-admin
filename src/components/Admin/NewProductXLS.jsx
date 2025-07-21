@@ -181,15 +181,20 @@ const NewProductXLS = () => {
             <h2 className="font-semibold text-lg text-gray-700">
               Upload Products via Excel
             </h2>
-            <Link
-              to="/admin/products"
-              className="py-2 px-4 rounded shadow font-medium text-white bg-primary-blue hover:shadow-lg hover:opacity-90 transition"
-            >
-              ← Back to Product List
-            </Link>
+            <div>
+              <Button variant="outlined" onClick={handleDownloadSample}>
+                  Download Sample Format
+                </Button>
+              <Link
+                to="/admin/products"
+                className="py-2 px-4 ml-2 rounded shadow font-medium text-white bg-primary-blue hover:shadow-lg hover:opacity-90 transition"
+              >
+                ← Back
+              </Link>
+            </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-4 mt-10">
             <input
               type="file"
               accept=".xlsx, .xls"
@@ -197,19 +202,17 @@ const NewProductXLS = () => {
               className="border rounded px-2 py-1 text-sm w-full md:w-1/2"
             />
             <div className="flex flex-wrap gap-2 md:gap-4">
-              <Button variant="outlined" onClick={handleParseExcel}>
+              <Button variant="outlined" onClick={handleParseExcel} disabled={!excelFile}>
                 Preview Data
               </Button>
               <Button
                 variant="contained"
                 onClick={handleUpload}
-                disabled={loading}
+                disabled={loading || !excelFile}
               >
                 {loading ? <CircularProgress size={24} /> : "Upload"}
               </Button>
-              <Button variant="outlined" onClick={handleDownloadSample}>
-                Download Sample Format
-              </Button>
+              
             </div>
           </div>
         </form>
