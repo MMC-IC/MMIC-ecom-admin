@@ -43,6 +43,7 @@ import OrderStatusReport from "./components/Admin/OrderStatusReport";
 import RevenueReport from "./components/Admin/RevenueReport";
 import InvoiceReport from "./components/Admin/InvoiceReport";
 import ProductSalesReport from "./components/Admin/ProductSalesReport";
+import SupplierDetails from "./components/Admin/SupplierDetails";
 
 function App() {
   const dispatch = useDispatch();
@@ -357,10 +358,32 @@ function App() {
         ></Route>
 
         <Route
+          path="/admin/add_supplier"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={7}>
+                <SupplierDetails />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/supplier/:id"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={7}>
+                <SupplierDetails />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
           path="/admin/report/orderStatus"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={null}>
+              <Dashboard activeTab={8}>
                 <OrderStatusReport />
               </Dashboard>
             </ProtectedRoute>
@@ -371,7 +394,7 @@ function App() {
           path="/admin/report/revenue"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={1}>
+              <Dashboard activeTab={8}>
                 <RevenueReport />
               </Dashboard>
             </ProtectedRoute>
@@ -382,7 +405,7 @@ function App() {
           path="/admin/report/invoices"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={1}>
+              <Dashboard activeTab={8}>
                 <InvoiceReport />
               </Dashboard>
             </ProtectedRoute>
@@ -393,7 +416,7 @@ function App() {
           path="/admin/report/productSales"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={1}>
+              <Dashboard activeTab={8}>
                 <ProductSalesReport />
               </Dashboard>
             </ProtectedRoute>

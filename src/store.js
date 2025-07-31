@@ -35,6 +35,12 @@ import {
   brandsReducer,
 } from "./reducers/brandReducer";
 import { productXLSUploadReducer } from "./reducers/productXLSReducer";
+import {
+  newSupplierReducer,
+  supplierDetailsReducer,
+  supplierReducer,
+  suppliersReducer,
+} from "./reducers/supplierReducer";
 
 const reducer = combineReducers({
   user: userReducer,
@@ -63,6 +69,10 @@ const reducer = combineReducers({
   newBrand: newBrandReducer,
   brandDetails: brandDetailsReducer,
   productXLSUpload: productXLSUploadReducer,
+  supplier: supplierReducer,
+  suppliers: suppliersReducer,
+  newSupplier: newSupplierReducer,
+  supplierDetails: supplierDetailsReducer,
 });
 
 let initialState = {

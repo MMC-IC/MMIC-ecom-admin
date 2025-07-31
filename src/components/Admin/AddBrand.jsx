@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useSnackbar } from "notistack";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   NEW_BRAND_RESET,

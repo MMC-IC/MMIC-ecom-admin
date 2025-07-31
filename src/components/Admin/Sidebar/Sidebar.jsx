@@ -69,6 +69,11 @@ const Sidebar = ({ activeTab, setToggleSidebar }) => {
       ref: "/admin/reviews",
     },
     {
+      icon: <AddBoxIcon />,
+      label: "Add Supplier",
+      ref: "/admin/add_supplier",
+    },
+    {
       label: "Reports",
       isDropdown: true,
       icon: <EqualizerIcon />,
@@ -135,7 +140,9 @@ const Sidebar = ({ activeTab, setToggleSidebar }) => {
               <div key={index} className="flex flex-col">
                 <div
                   onClick={() => setShowReports(!showReports)}
-                  className="flex gap-3 items-center justify-between py-3 px-4 font-medium hover:bg-gray-600 cursor-pointer"
+                  className={`${
+                    activeTab === index ? "bg-gray-600" : "hover:bg-gray-600"
+                  } flex gap-3 items-center justify-between py-3 px-4 font-medium cursor-pointer`}
                 >
                   <div className="flex gap-3 items-center">
                     <span>{item.icon}</span>
