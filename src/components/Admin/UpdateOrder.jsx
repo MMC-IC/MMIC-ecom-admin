@@ -15,6 +15,7 @@ import Loading from "./Loading";
 import { Link } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import MetaData from "../Layouts/MetaData";
+import { getSuppliers } from "../../actions/supplierAction";
 
 const UpdateOrder = () => {
   const dispatch = useDispatch();
@@ -22,9 +23,15 @@ const UpdateOrder = () => {
   const params = useParams();
 
   const [status, setStatus] = useState("");
+  const [selectedSupplier, setSelectedSupplier] = useState("");
 
   const { order, error, loading } = useSelector((state) => state.orderDetails);
   const { isUpdated, error: updateError } = useSelector((state) => state.order);
+  const {
+    suppliers,
+    error: supplierError,
+    loading: supplierLoading,
+  } = useSelector((state) => state.suppliers);
 
   useEffect(() => {
     if (error) {
@@ -40,15 +47,24 @@ const UpdateOrder = () => {
       dispatch({ type: UPDATE_ORDER_RESET });
     }
     dispatch(getOrderDetails(params.id));
+    dispatch(getSuppliers());
   }, [dispatch, error, params.id, isUpdated, updateError, enqueueSnackbar]);
 
   const updateOrderSubmitHandler = (e) => {
     e.preventDefault();
+    if (status === "Shipped" && !selectedSupplier) {
+      enqueueSnackbar("Please select a supplier before shipping the order.", {
+        variant: "warning",
+      });
+      return;
+    }
     const formData = new FormData();
     formData.set("status", status);
+    if (status === "Shipped") {
+      formData.set("supplier", selectedSupplier);
+    }
     dispatch(updateOrder(params.id, formData));
   };
-
   return (
     <>
       <MetaData title="Admin: Update Order | MMIC" />
@@ -105,6 +121,7 @@ const UpdateOrder = () => {
                         `Delivered on ${formatDate(order.deliveredAt)}`}
                     </p>
                   </div>
+
                   <FormControl fullWidth sx={{ marginTop: 1 }}>
                     <InputLabel id="order-status-select-label">
                       Status
@@ -127,6 +144,26 @@ const UpdateOrder = () => {
                       )}
                     </Select>
                   </FormControl>
+                  {status === "Shipped" && order.orderStatus !== "Shipped" && (
+                    <FormControl fullWidth sx={{ marginTop: 2 }}>
+                      <InputLabel id="supplier-select-label">
+                        Select Supplier
+                      </InputLabel>
+                      <Select
+                        labelId="supplier-select-label"
+                        id="supplier-select"
+                        value={selectedSupplier}
+                        label="Select Supplier"
+                        onChange={(e) => setSelectedSupplier(e.target.value)}
+                      >
+                        {suppliers.map((supplier) => (
+                          <MenuItem key={supplier._id} value={supplier._id}>
+                            {supplier.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
                   <button
                     type="submit"
                     className="bg-primary-orange p-2.5 text-white font-medium rounded shadow hover:shadow-lg"
