@@ -21,6 +21,7 @@ import {
   deleteBrand,
   getBrandDetails,
 } from "../../actions/brandAction";
+import { API_BASE_URL, getCall } from "../../api/HttpService";
 
 const AddBrand = () => {
   const dispatch = useDispatch();
@@ -176,7 +177,7 @@ const AddBrand = () => {
 
   const columns = [
     {
-      field: "id",
+      field: "code",
       headerName: "Brand Code",
       minWidth: 100,
       flex: 0.5,
@@ -191,7 +192,7 @@ const AddBrand = () => {
           <div className="w-10 h-10 rounded-full overflow-hidden">
             <img
               draggable={false}
-              src={params.row.image}
+              src={`${API_BASE_URL}/img/brands/${params.row?.image}`}
               alt={params.row.name}
               className="w-full h-full object-cover"
             />
@@ -218,9 +219,10 @@ const AddBrand = () => {
 
   const rows =
     brands?.map((item) => ({
-      id: item.brand_code,
+      id: item._id,
+      code: item.brand_code,
       name: item.name,
-      image: item.logo?.url,
+      image: item.logo?.url || item.logo?.public_id,
     })) ?? [];
 
   return (
