@@ -1,0 +1,27 @@
+name: MMIC Ecommerce Admin
+
+on:
+  push:
+    branches: [ uat ]
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    
+    steps: 
+      - uses: actions/checkout@v2
+
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+      
+      - name: Deploy to Server
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 2244 root@103.91.186.43 "
+            export NVM_DIR=\"/root/.nvm\"
+            [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"  # Load nvm
+            cd /var/www/mmic/uat/MMIC-ecom-admin &&
+            git checkout uat &&
+            git fetch &&
+            git pull &&
+            npm run build
+          "
