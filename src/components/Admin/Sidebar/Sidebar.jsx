@@ -60,7 +60,7 @@ const Sidebar = ({ activeTab, setToggleSidebar }) => {
     },
     {
       icon: <GroupIcon />,
-      label: "Users",
+      label: "Customers",
       ref: "/admin/users",
     },
     {

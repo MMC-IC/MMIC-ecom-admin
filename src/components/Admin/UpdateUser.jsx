@@ -52,7 +52,7 @@ const UpdateUser = () => {
             setEmail(user.email);
             setGender(user.gender);
             setRole(user.role);
-            setAvatarPreview(user.avatar.url);
+            setAvatarPreview(user?.avatar?.url);
         }
         if (error) {
             enqueueSnackbar(error, { variant: "error" });
@@ -140,7 +140,7 @@ const UpdateUser = () => {
                                         value={role}
                                         onChange={(e) => setRole(e.target.value)}
                                     >
-                                        <MenuItem value={"user"}>User</MenuItem>
+                                        <MenuItem value={"customer"}>Customer</MenuItem>
                                         <MenuItem value={"admin"}>Admin</MenuItem>
                                     </TextField>
                                 </div>
