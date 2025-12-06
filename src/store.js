@@ -40,6 +40,7 @@ import {
   supplierDetailsReducer,
   supplierReducer,
   suppliersReducer,
+  supplierSalesReducer,
 } from "./reducers/supplierReducer";
 
 const reducer = combineReducers({
@@ -73,6 +74,7 @@ const reducer = combineReducers({
   suppliers: suppliersReducer,
   newSupplier: newSupplierReducer,
   supplierDetails: supplierDetailsReducer,
+  supplierSales: supplierSalesReducer,
 });
 
 let initialState = {

@@ -94,6 +94,10 @@ const Sidebar = ({ activeTab, setToggleSidebar }) => {
           label: "Product Sales Report",
           ref: "/admin/report/productSales",
         },
+        {
+          label: "Supplier Sales Report",
+          ref: "/admin/report/supplier-sales",
+        },
       ],
     },
     {

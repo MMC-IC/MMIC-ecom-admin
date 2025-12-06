@@ -44,6 +44,7 @@ import RevenueReport from "./components/Admin/RevenueReport";
 import InvoiceReport from "./components/Admin/InvoiceReport";
 import ProductSalesReport from "./components/Admin/ProductSalesReport";
 import SupplierDetails from "./components/Admin/SupplierDetails";
+import SupplierSalesReport from "./components/Admin/SupplierSalesReport";
 
 function App() {
   const dispatch = useDispatch();
@@ -82,7 +83,7 @@ function App() {
   }, [pathname]);
 
   // disable right click
-  window.addEventListener("contextmenu", (e) => e.preventDefault());
+  //window.addEventListener("contextmenu", (e) => e.preventDefault());
   window.addEventListener("keydown", (e) => {
     if (e.keyCode === 123) e.preventDefault();
     if (e.ctrlKey && e.shiftKey && e.keyCode === 73) e.preventDefault();
@@ -418,6 +419,17 @@ function App() {
             <ProtectedRoute isAdmin={true}>
               <Dashboard activeTab={8}>
                 <ProductSalesReport />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/report/supplier-sales"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={8}>
+                <SupplierSalesReport />
               </Dashboard>
             </ProtectedRoute>
           }
