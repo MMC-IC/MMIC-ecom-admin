@@ -15,23 +15,16 @@ import Loading from "./Loading";
 import { Link } from "react-router-dom";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import MetaData from "../Layouts/MetaData";
-import { getSuppliers } from "../../actions/supplierAction";
 
 const UpdateOrder = () => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
 
-  const [status, setStatus] = useState("");
-  const [selectedSupplier, setSelectedSupplier] = useState("");
+  const [itemStatus, setItemStatus] = useState({});
 
   const { order, error, loading } = useSelector((state) => state.orderDetails);
   const { isUpdated, error: updateError } = useSelector((state) => state.order);
-  const {
-    suppliers,
-    error: supplierError,
-    loading: supplierLoading,
-  } = useSelector((state) => state.suppliers);
 
   useEffect(() => {
     if (error) {
@@ -47,24 +40,15 @@ const UpdateOrder = () => {
       dispatch({ type: UPDATE_ORDER_RESET });
     }
     dispatch(getOrderDetails(params.id));
-    dispatch(getSuppliers());
   }, [dispatch, error, params.id, isUpdated, updateError, enqueueSnackbar]);
 
-  const updateOrderSubmitHandler = (e) => {
-    e.preventDefault();
-    if (status === "Shipped" && !selectedSupplier) {
-      enqueueSnackbar("Please select a supplier before shipping the order.", {
-        variant: "warning",
-      });
-      return;
-    }
+  const updateOrderSubmitHandler = (itemId) => {
     const formData = new FormData();
-    formData.set("status", status);
-    if (status === "Shipped") {
-      formData.set("supplier", selectedSupplier);
-    }
-    dispatch(updateOrder(params.id, formData));
+
+    formData.set("status", itemStatus[itemId]);
+    dispatch(updateOrder(params.id, itemId, formData));
   };
+
   return (
     <>
       <MetaData title="Admin: Update Order | MMIC" />
@@ -104,85 +88,19 @@ const UpdateOrder = () => {
                     </div>
                   </div>
                 </div>
-
-                <form
-                  onSubmit={updateOrderSubmitHandler}
-                  className="flex flex-col gap-3 p-8"
-                >
-                  <h3 className="font-medium text-lg">Update Status</h3>
-                  <div className="flex gap-2">
-                    <p className="text-sm font-medium">Current Status:</p>
-                    <p className="text-sm">
-                      {order.orderStatus === "Shipped" &&
-                        `Shipped on ${formatDate(order.shippedAt)}`}
-                      {order.orderStatus === "Processing" &&
-                        `Ordered on ${formatDate(order.createdAt)}`}
-                      {order.orderStatus === "Delivered" &&
-                        `Delivered on ${formatDate(order.deliveredAt)}`}
-                    </p>
-                  </div>
-
-                  <FormControl fullWidth sx={{ marginTop: 1 }}>
-                    <InputLabel id="order-status-select-label">
-                      Status
-                    </InputLabel>
-                    <Select
-                      labelId="order-status-select-label"
-                      id="order-status-select"
-                      value={status}
-                      label="Status"
-                      onChange={(e) => setStatus(e.target.value)}
-                    >
-                      {order.orderStatus === "Shipped" && (
-                        <MenuItem value={"Delivered"}>Delivered</MenuItem>
-                      )}
-                      {order.orderStatus === "Processing" && (
-                        <MenuItem value={"Shipped"}>Shipped</MenuItem>
-                      )}
-                      {order.orderStatus === "Delivered" && (
-                        <MenuItem value={"Delivered"}>Delivered</MenuItem>
-                      )}
-                    </Select>
-                  </FormControl>
-                  {status === "Shipped" && order.orderStatus !== "Shipped" && (
-                    <FormControl fullWidth sx={{ marginTop: 2 }}>
-                      <InputLabel id="supplier-select-label">
-                        Select Supplier
-                      </InputLabel>
-                      <Select
-                        labelId="supplier-select-label"
-                        id="supplier-select"
-                        value={selectedSupplier}
-                        label="Select Supplier"
-                        onChange={(e) => setSelectedSupplier(e.target.value)}
-                      >
-                        {suppliers.map((supplier) => (
-                          <MenuItem key={supplier._id} value={supplier._id}>
-                            {supplier.name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                  <button
-                    type="submit"
-                    className="bg-primary-orange p-2.5 text-white font-medium rounded shadow hover:shadow-lg"
-                  >
-                    Update
-                  </button>
-                </form>
               </div>
 
               {order.orderItems &&
                 order.orderItems.map((item) => {
-                  const { _id, image, name, price, quantity } = item;
+                  const { _id, image, name, price, quantity, status } = item;
 
                   return (
                     <div
-                      className="flex flex-col sm:flex-row min-w-full shadow-lg rounded-lg bg-white px-2 py-5"
+                      className="flex flex-col min-w-full shadow-lg rounded-lg bg-white px-2 py-5 gap-4"
                       key={_id}
                     >
-                      <div className="flex flex-col sm:flex-row sm:w-1/2 gap-1">
+                      {/* Row 1 - Product Image + Name + Qty + Price */}
+                      <div className="flex flex-col sm:flex-row sm:w-full gap-3">
                         <div className="w-full sm:w-32 h-24">
                           <img
                             draggable="false"
@@ -191,6 +109,7 @@ const UpdateOrder = () => {
                             alt={name}
                           />
                         </div>
+
                         <div className="flex flex-col gap-1 overflow-hidden">
                           <p className="text-sm">
                             {name.length > 45
@@ -207,24 +126,64 @@ const UpdateOrder = () => {
                             Total: ₹{(quantity * price).toLocaleString()}
                           </span>
                         </div>
+
+                        <div className="flex flex-col w-full sm:w-1/2">
+                          <h3 className="font-medium sm:text-center">
+                            Order Status
+                          </h3>
+                          <TrackStepper
+                            orderOn={order.createdAt}
+                            shippedAt={order.shippedAt}
+                            deliveredAt={order.deliveredAt}
+                            activeStep={
+                              status === "Delivered"
+                                ? 2
+                                : status === "Shipped"
+                                ? 1
+                                : 0
+                            }
+                          />
+                        </div>
                       </div>
 
-                      <div className="flex flex-col w-full sm:w-1/2">
-                        <h3 className="font-medium sm:text-center">
-                          Order Status
-                        </h3>
-                        <TrackStepper
-                          orderOn={order.createdAt}
-                          shippedAt={order.shippedAt}
-                          deliveredAt={order.deliveredAt}
-                          activeStep={
-                            order.orderStatus === "Delivered"
-                              ? 2
-                              : order.orderStatus === "Shipped"
-                              ? 1
-                              : 0
-                          }
-                        />
+                      {/* Row 2 - Dropdown + Update Button */}
+                      <div className="flex flex-col sm:flex-row sm:w-full gap-3">
+                        <div className="flex flex-col w-full sm:w-1/2">
+                          <FormControl fullWidth sx={{ marginTop: 1 }}>
+                            <InputLabel id={`status-${_id}`}>Status</InputLabel>
+                            <Select
+                              labelId={`status-${_id}`}
+                              value={itemStatus[_id] || ""}
+                              label="Status"
+                              onChange={(e) =>
+                                setItemStatus({
+                                  ...itemStatus,
+                                  [_id]: e.target.value,
+                                })
+                              }
+                            >
+                              {status === "Shipped" && (
+                                <MenuItem value="Delivered">Delivered</MenuItem>
+                              )}
+                              {status === "Ordered" && (
+                                <MenuItem value="Shipped">Shipped</MenuItem>
+                              )}
+                              {status === "Delivered" && (
+                                <MenuItem value="Delivered">Delivered</MenuItem>
+                              )}
+                            </Select>
+                          </FormControl>
+                        </div>
+
+                        <div className="flex flex-col w-full sm:w-1/2">
+                          <button
+                            type="button"
+                            onClick={() => updateOrderSubmitHandler(_id)}
+                            className="bg-primary-orange p-2.5 text-white font-medium rounded shadow hover:shadow-lg"
+                          >
+                            Update
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
