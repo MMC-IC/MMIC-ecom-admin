@@ -39,7 +39,7 @@ import NotFound from "./components/NotFound";
 import ProductPPTGenerator from "./components/Admin/ProductPPTGenerator";
 import AddBrand from "./components/Admin/AddBrand";
 import NewProductXLS from "./components/Admin/NewProductXLS";
-import OrderStatusReport from "./components/Admin/OrderStatusReport";
+import OrderSummaryReport from "./components/Admin/OrderSummaryReport";
 import RevenueReport from "./components/Admin/RevenueReport";
 import InvoiceReport from "./components/Admin/InvoiceReport";
 import ProductSalesReport from "./components/Admin/ProductSalesReport";
@@ -385,7 +385,7 @@ function App() {
           element={
             <ProtectedRoute isAdmin={true}>
               <Dashboard activeTab={8}>
-                <OrderStatusReport />
+                <OrderSummaryReport />
               </Dashboard>
             </ProtectedRoute>
           }

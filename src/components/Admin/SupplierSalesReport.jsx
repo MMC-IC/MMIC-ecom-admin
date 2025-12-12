@@ -3,6 +3,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DataGrid } from "@mui/x-data-grid";
+import IconButton from "@mui/material/IconButton";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import * as XLSX from "xlsx";
 import { getSupplierSales } from "../../actions/supplierAction";
 
@@ -225,12 +227,12 @@ export default function SupplierReport() {
       {/* Supplier Filter + Export */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Supplier Sales Report</h2>
-        <button
+        <IconButton
           onClick={exportSupplierExcel}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          className="text-green-600 hover:text-green-700"
         >
-          Export Supplier Excel
-        </button>
+          <FileDownloadIcon />
+        </IconButton>
       </div>
       <div className="mb-4">
         <input
@@ -247,6 +249,8 @@ export default function SupplierReport() {
         columns={supplierColumns}
         autoHeight
         pageSize={10}
+        rowsPerPageOptions={[10, 25, 50]}
+        className="bg-white rounded shadow"
         sx={{
           "& .MuiDataGrid-cell": { padding: "6px 12px" },
           "& .MuiDataGrid-columnHeaders": { padding: "6px 12px" },
@@ -260,12 +264,12 @@ export default function SupplierReport() {
             <h3 className="text-lg font-semibold">
               Products – {selectedSupplier.supplierName}
             </h3>
-            <button
+            <IconButton
               onClick={exportProductExcel}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className="text-green-600 hover:text-green-700"
             >
-              Export Product Excel
-            </button>
+              <FileDownloadIcon />
+            </IconButton>
           </div>
           <div className="mb-4">
             <input
@@ -281,6 +285,8 @@ export default function SupplierReport() {
             columns={productColumns}
             autoHeight
             pageSize={10}
+            rowsPerPageOptions={[10, 25, 50]}
+            className="bg-white rounded shadow"
             sx={{
               "& .MuiDataGrid-cell": { padding: "6px 12px" },
               "& .MuiDataGrid-columnHeaders": { padding: "6px 12px" },
@@ -296,18 +302,20 @@ export default function SupplierReport() {
             <h3 className="text-lg font-semibold">
               Invoices – {selectedProduct.productName}
             </h3>
-            <button
+            <IconButton
               onClick={exportInvoiceExcel}
-              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+              className="text-green-600 hover:text-green-700"
             >
-              Export Invoice Excel
-            </button>
+              <FileDownloadIcon />
+            </IconButton>
           </div>
           <DataGrid
             rows={invoiceRows}
             columns={invoiceColumns}
             autoHeight
             pageSize={10}
+            rowsPerPageOptions={[10, 25, 50]}
+            className="bg-white rounded shadow"
             sx={{
               "& .MuiDataGrid-cell": { padding: "6px 12px" },
               "& .MuiDataGrid-columnHeaders": { padding: "6px 12px" },

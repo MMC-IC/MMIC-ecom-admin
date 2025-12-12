@@ -79,7 +79,7 @@ const Sidebar = ({ activeTab, setToggleSidebar }) => {
       icon: <EqualizerIcon />,
       children: [
         {
-          label: "Order Status Report",
+          label: "Order Summary Report",
           ref: "/admin/report/orderStatus",
         },
         {

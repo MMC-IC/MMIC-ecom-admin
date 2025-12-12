@@ -37,7 +37,6 @@ const InvoiceReport = () => {
       "Invoice Date": format(new Date(order.invoiceDate), "MM/dd/yyyy hh:mm a"),
       "Customer Name": order.billingInfo?.name || "N/A",
       "Total Price (₹)": order.totalPrice,
-      "Order Status": order.orderStatus,
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -76,11 +75,6 @@ const InvoiceReport = () => {
       headerName: "Total (₹)",
       flex: 1,
     },
-    {
-      field: "status",
-      headerName: "Order Status",
-      flex: 1,
-    },
   ];
 
   const rows = filteredOrders.map((order, i) => ({
@@ -89,7 +83,6 @@ const InvoiceReport = () => {
     invoiceDate: order.invoiceDate,
     name: order.billingInfo?.name || "N/A",
     total: order.totalPrice,
-    status: order.orderStatus,
   }));
 
   return (
