@@ -21,6 +21,15 @@ import {
   UPDATE_ORDER_FAIL,
   UPDATE_ORDER_REQUEST,
   UPDATE_ORDER_SUCCESS,
+  ADMIN_RETURN_REQUEST,
+  ADMIN_RETURN_SUCCESS,
+  ADMIN_RETURN_FAIL,
+  APPROVE_RETURN_REQUEST,
+  APPROVE_RETURN_SUCCESS,
+  APPROVE_RETURN_FAIL,
+  REJECT_RETURN_REQUEST,
+  REJECT_RETURN_SUCCESS,
+  REJECT_RETURN_FAIL,
 } from "../constants/orderConstants";
 import { deleteCall, getCall, postCall, putCall } from "../api/HttpService";
 
@@ -156,6 +165,63 @@ export const deleteOrder = (id) => async (dispatch) => {
     dispatch({
       type: DELETE_ORDER_FAIL,
       payload: error.response.data.message,
+    });
+  }
+};
+
+// 🔹 Get all return requested items (ADMIN)
+export const getReturnRequests = () => async (dispatch) => {
+  try {
+    dispatch({ type: ADMIN_RETURN_REQUEST });
+
+    const { data } = await getCall("/api/v1/admin/returns");
+
+    dispatch({
+      type: ADMIN_RETURN_SUCCESS,
+      payload: data.items,
+    });
+  } catch (error) {
+    dispatch({
+      type: ADMIN_RETURN_FAIL,
+      payload: error.response?.data?.message || error.message,
+    });
+  }
+};
+
+// 🔹 Approve return (restore stock)
+export const approveReturn = (orderId, itemId) => async (dispatch) => {
+  try {
+    dispatch({ type: APPROVE_RETURN_REQUEST });
+
+    const { data } = await putCall(
+      `/api/v1/admin/return/approve/${orderId}/${itemId}`
+    );
+
+    dispatch({ type: APPROVE_RETURN_SUCCESS });
+    return data;
+  } catch (error) {
+    dispatch({
+      type: APPROVE_RETURN_FAIL,
+      payload: error.response?.data?.message || error.message,
+    });
+  }
+};
+
+// 🔹 Reject return
+export const rejectReturn = (orderId, itemId) => async (dispatch) => {
+  try {
+    dispatch({ type: REJECT_RETURN_REQUEST });
+
+    const { data } = await putCall(
+      `/api/v1/admin/return/reject/${orderId}/${itemId}`
+    );
+
+    dispatch({ type: REJECT_RETURN_SUCCESS });
+    return data;
+  } catch (error) {
+    dispatch({
+      type: REJECT_RETURN_FAIL,
+      payload: error.response?.data?.message || error.message,
     });
   }
 };

@@ -26,6 +26,7 @@ import {
   orderDetailsReducer,
   orderReducer,
   paymentStatusReducer,
+  returnOrdersReducer,
 } from "./reducers/orderReducer";
 import { wishlistReducer } from "./reducers/wishlistReducer";
 import {
@@ -75,6 +76,7 @@ const reducer = combineReducers({
   newSupplier: newSupplierReducer,
   supplierDetails: supplierDetailsReducer,
   supplierSales: supplierSalesReducer,
+  returnOrders: returnOrdersReducer,
 });
 
 let initialState = {

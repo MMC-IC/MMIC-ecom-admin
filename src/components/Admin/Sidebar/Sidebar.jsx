@@ -6,7 +6,6 @@ import GroupIcon from "@mui/icons-material/Group";
 import ReviewsIcon from "@mui/icons-material/Reviews";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import LogoutIcon from "@mui/icons-material/Logout";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import CloseIcon from "@mui/icons-material/Close";
 import Avatar from "@mui/material/Avatar";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -44,9 +43,9 @@ const Sidebar = ({ activeTab, setToggleSidebar }) => {
       ref: "/admin/orders",
     },
     {
-      icon: <AddBoxIcon />,
-      label: "Add Brand",
-      ref: "/admin/add_brand",
+      icon: <InventoryIcon />,
+      label: "Return Requests",
+      ref: "/admin/returns",
     },
     {
       icon: <InventoryIcon />,
@@ -59,6 +58,16 @@ const Sidebar = ({ activeTab, setToggleSidebar }) => {
       ref: "/admin/new_product",
     },
     {
+      icon: <AddBoxIcon />,
+      label: "Add Brand",
+      ref: "/admin/add_brand",
+    },
+    {
+      icon: <AddBoxIcon />,
+      label: "Add Supplier",
+      ref: "/admin/add_supplier",
+    },
+    {
       icon: <GroupIcon />,
       label: "Users",
       ref: "/admin/users",
@@ -67,11 +76,6 @@ const Sidebar = ({ activeTab, setToggleSidebar }) => {
       icon: <ReviewsIcon />,
       label: "Reviews",
       ref: "/admin/reviews",
-    },
-    {
-      icon: <AddBoxIcon />,
-      label: "Add Supplier",
-      ref: "/admin/add_supplier",
     },
     {
       label: "Reports",
