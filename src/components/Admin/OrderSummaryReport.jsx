@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllOrders } from "../../actions/orderAction";
-import { useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import IconButton from "@mui/material/IconButton";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
@@ -9,8 +8,6 @@ import * as XLSX from "xlsx";
 
 const OrderSummaryReport = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const { orders = [], loading } = useSelector((state) => state.allOrders);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
@@ -19,18 +16,11 @@ const OrderSummaryReport = () => {
   }, [dispatch]);
 
   const rows = orders.map((order) => ({
-    invoiceNumber: order.invoiceNumber,
     id: order._id,
-    oid: order._id,
+    invoiceNumber: order.invoiceNumber,
     customer: order.shippingInfo.name,
     email: order.shippingInfo.email,
     phone: order.shippingInfo.mobileNo,
-    price: Number(
-      order.orderItems.reduce((total, item) => total + item.price, 0).toFixed(2)
-    ),
-    sgst: Number(order.SGST.toFixed(2)),
-    cgst: Number(order.CGST.toFixed(2)),
-    discount: Number(order.discount.toFixed(2)),
     totalAmount: Number(order.totalPrice.toFixed(2)),
     date: new Date(order.createdAt).toLocaleDateString("en-IN"),
   }));
@@ -38,171 +28,87 @@ const OrderSummaryReport = () => {
   const columns = [
     {
       field: "invoiceNumber",
-      headerName: "Invoice number",
+      headerName: "Invoice Number",
       flex: 1,
-      minWidth: 180,
       renderCell: (params) => (
         <button
           className="text-blue-600 underline"
-          onClick={() => {
-            setSelectedOrder(
-              orders.find((o) => o._id === params.row.id) || null
-            );
-          }}
+          onClick={() =>
+            setSelectedOrder(orders.find((o) => o._id === params.row.id))
+          }
         >
           {params.value}
         </button>
       ),
     },
-    { field: "customer", headerName: "Customer", flex: 1, minWidth: 150 },
-    { field: "email", headerName: "Email", flex: 1, minWidth: 200 },
-    { field: "phone", headerName: "Phone", flex: 1, minWidth: 130 },
-    {
-      field: "price",
-      headerName: "Price",
-      flex: 1,
-      minWidth: 130,
-      renderCell: (params) => `₹${params.value}`,
-    },
-    {
-      field: "sgst",
-      headerName: "SGST",
-      flex: 1,
-      minWidth: 130,
-      renderCell: (params) => `₹${params.value}`,
-    },
-    {
-      field: "cgst",
-      headerName: "CGST",
-      flex: 1,
-      minWidth: 130,
-      renderCell: (params) => `₹${params.value}`,
-    },
-    {
-      field: "discount",
-      headerName: "Discount",
-      flex: 1,
-      minWidth: 130,
-      renderCell: (params) => `₹${params.value}`,
-    },
+    { field: "customer", headerName: "Customer", flex: 1 },
+    { field: "email", headerName: "Email", flex: 1 },
+    { field: "phone", headerName: "Phone", flex: 1 },
     {
       field: "totalAmount",
       headerName: "Total Amount",
       flex: 1,
-      minWidth: 130,
       renderCell: (params) => `₹${params.value}`,
     },
-    {
-      field: "date",
-      headerName: "Ordered On",
-      flex: 1,
-      minWidth: 160,
-    },
+    { field: "date", headerName: "Ordered On", flex: 1 },
   ];
 
   const exportExcel = () => {
-    const excelRows = rows.map(({ id, oid, ...rest }) => rest);
-    const ws = XLSX.utils.json_to_sheet(excelRows);
+    const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Order Summary Report");
+    XLSX.utils.book_append_sheet(wb, ws, "Order Summary");
     XLSX.writeFile(wb, "Order_Summary_Report.xlsx");
   };
 
-  const orderRows = useMemo(() => {
+  const itemRows = useMemo(() => {
     if (!selectedOrder) return [];
-    return selectedOrder.orderItems.map((order) => ({
+    return selectedOrder.orderItems.map((item) => ({
+      id: item._id,
       invoiceNumber: selectedOrder.invoiceNumber,
-      id: order._id,
-      oid: order._id,
-      productName: order.name,
-      price: Number(order.price.toFixed(2)),
-      quantity: order.quantity,
-      totalAmount: Number(order.price * order.quantity).toFixed(2),
-      status: order.status,
+      product: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      total: item.price * item.quantity,
+      status: item.status,
     }));
   }, [selectedOrder]);
 
-  const orderColumns = [
-    {
-      field: "invoiceNumber",
-      headerName: "Invoice number",
-      flex: 1,
-      minWidth: 150,
-    },
-    {
-      field: "productName",
-      headerName: "Product name",
-      flex: 1,
-      minWidth: 150,
-    },
+  const itemColumns = [
+    { field: "invoiceNumber", headerName: "Invoice", flex: 1 },
+    { field: "product", headerName: "Product", flex: 1 },
+    { field: "quantity", headerName: "Qty", flex: 1 },
     {
       field: "price",
       headerName: "Price",
       flex: 1,
-      minWidth: 150,
-      renderCell: (params) => `₹${params.value}`,
+      renderCell: (p) => `₹${p.value}`,
     },
-    { field: "quantity", headerName: "Quantity", flex: 1, minWidth: 150 },
     {
-      field: "totalAmount",
-      headerName: "Total amount",
+      field: "total",
+      headerName: "Total",
       flex: 1,
-      minWidth: 150,
-      renderCell: (params) => `₹${params.value}`,
+      renderCell: (p) => `₹${p.value}`,
     },
-    { field: "status", headerName: "status", flex: 1, minWidth: 150 },
+    { field: "status", headerName: "Status", flex: 1 },
   ];
 
-  const exportItemStatusExcel = () => {
-    const excelItemStatusRows = orderRows.map(({ id, oid, ...rest }) => rest);
-    const ws = XLSX.utils.json_to_sheet(excelItemStatusRows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Order Item Status Report");
-    XLSX.writeFile(wb, "Order_Item_Status_Report.xlsx");
-  };
-
   return (
-    <div className="bg-white p-4 sm:p-8 rounded shadow-md">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-white p-6 rounded shadow">
+      <div className="flex justify-between mb-4">
         <h2 className="text-xl font-semibold">Order Summary Report</h2>
-        <IconButton
-          onClick={exportExcel}
-          className="text-green-600 hover:text-green-700"
-        >
+        <IconButton onClick={exportExcel}>
           <FileDownloadIcon />
         </IconButton>
       </div>
-      <div style={{ width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          loading={loading}
-          autoHeight
-          pageSize={10}
-          disableRowSelectionOnClick
-        />
-      </div>
+
+      <DataGrid rows={rows} columns={columns} autoHeight />
+
       {selectedOrder && (
         <div className="mt-10">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Order Item Status Report</h2>
-            <IconButton
-              onClick={exportItemStatusExcel}
-              className="text-green-600 hover:text-green-700"
-            >
-              <FileDownloadIcon />
-            </IconButton>
-          </div>
-          <div style={{ width: "100%" }}>
-            <DataGrid
-              rows={orderRows}
-              columns={orderColumns}
-              loading={loading}
-              autoHeight
-              pageSize={10}
-              disableRowSelectionOnClick
-            />
-          </div>
+          <h2 className="text-xl font-semibold mb-4">
+            Order Item Status Report
+          </h2>
+          <DataGrid rows={itemRows} columns={itemColumns} autoHeight />
         </div>
       )}
     </div>
