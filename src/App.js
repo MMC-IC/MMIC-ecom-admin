@@ -47,6 +47,8 @@ import SupplierDetails from "./components/Admin/SupplierDetails";
 import SupplierSalesReport from "./components/Admin/SupplierSalesReport";
 import AdminReturnList from "./components/Admin/AdminReturnList";
 import AdminReturnAction from "./components/Admin/AdminReturnAction";
+import AdminSupplierReturnList from "./components/Admin/AdminSupplierReturnList";
+import AdminSupplierReturnAction from "./components/Admin/AdminSupplierReturnAction";
 
 function App() {
   const dispatch = useDispatch();
@@ -278,6 +280,28 @@ function App() {
             <ProtectedRoute isAdmin={true}>
               <Dashboard activeTab={1}>
                 <AdminReturnAction />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/supplier-returns"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={2}>
+                <AdminSupplierReturnList />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/supplier-return/:id"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={1}>
+                <AdminSupplierReturnAction />
               </Dashboard>
             </ProtectedRoute>
           }
