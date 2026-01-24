@@ -5,6 +5,8 @@ import { getAllOrders } from "../../actions/orderAction";
 import { getAdminProducts } from "../../actions/productAction";
 import { Button } from "@mui/material";
 import * as XLSX from "xlsx";
+import IconButton from "@mui/material/IconButton";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 const ProductSalesReport = () => {
   const dispatch = useDispatch();
@@ -28,14 +30,24 @@ const ProductSalesReport = () => {
           sales[item.product] = {
             id: item.product,
             name: item.name,
-            quantity: 0,
             revenue: 0,
             stock: matchingProduct?.stock ?? "N/A",
+            availableBaseStock: matchingProduct?.availableBaseStock ?? "N/A",
+            quantity: 0,
+            shipped: 0,
+            delivered: 0,
+            cancelled: 0,
           };
         }
 
-        sales[item.product].quantity += item.quantity;
         sales[item.product].revenue += item.quantity * item.price;
+        sales[item.product].quantity += item.quantity;
+        sales[item.product].shipped +=
+          item.status === "Shipped" ? item.quantity : 0;
+        sales[item.product].delivered +=
+          item.status === "Delivered" ? item.quantity : 0;
+        sales[item.product].cancelled +=
+          item.status === "Cancelled" ? item.quantity : 0;
       });
     });
 
@@ -48,21 +60,45 @@ const ProductSalesReport = () => {
   const columns = [
     { field: "name", headerName: "Product Name", flex: 1 },
     {
-      field: "quantity",
-      headerName: "Total Units Sold",
-      type: "number",
-      flex: 1,
-    },
-    {
       field: "revenue",
-      headerName: "Total Revenue",
+      headerName: "Revenue",
       type: "number",
       flex: 1,
       valueFormatter: (params) => `₹${params.value.toFixed(2)}`,
     },
     {
       field: "stock",
+      headerName: "Stock",
+      type: "number",
+      flex: 1,
+    },
+    {
+      field: "availableBaseStock",
       headerName: "Available Stock",
+      type: "number",
+      flex: 1,
+    },
+    {
+      field: "quantity",
+      headerName: "Ordered",
+      type: "number",
+      flex: 1,
+    },
+    {
+      field: "shipped",
+      headerName: "Shipped",
+      type: "number",
+      flex: 1,
+    },
+    {
+      field: "delivered",
+      headerName: "Delivered",
+      type: "number",
+      flex: 1,
+    },
+    {
+      field: "cancelled",
+      headerName: "Cancelled",
       type: "number",
       flex: 1,
     },
@@ -71,9 +107,13 @@ const ProductSalesReport = () => {
   const exportToExcel = () => {
     const exportData = rows.map((item) => ({
       "Product Name": item.name,
-      "Total Units Sold": item.quantity,
-      "Total Revenue (₹)": item.revenue.toFixed(2),
-      "Available Stock": item.stock,
+      "Revenue (₹)": item.revenue.toFixed(2),
+      Stock: item.stock,
+      "Available Stock": item.availableBaseStock,
+      Ordered: item.quantity,
+      Shipped: item.shipped,
+      Delivered: item.delivered,
+      Cancelled: item.cancelled,
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -86,19 +126,21 @@ const ProductSalesReport = () => {
     <div className="p-4 sm:p-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold">Product Sales Report</h2>
-        <button
+        <IconButton
           onClick={exportToExcel}
-          className="bg-green-600 text-white font-medium px-4 py-2 rounded hover:bg-green-700"
+          className="text-green-600 hover:text-green-700"
         >
-          Export Excel
-        </button>
+          <FileDownloadIcon />
+        </IconButton>
       </div>
       <div style={{ height: 500, width: "100%" }}>
         <DataGrid
           rows={rows}
           columns={columns}
+          autoHeight
           pageSize={10}
-          disableSelectionOnClick
+          rowsPerPageOptions={[10, 25, 50]}
+          className="bg-white rounded shadow"
         />
       </div>
     </div>

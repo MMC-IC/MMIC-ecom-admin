@@ -5,6 +5,8 @@ import { format } from "date-fns";
 import { DataGrid } from "@mui/x-data-grid";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import IconButton from "@mui/material/IconButton";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 const RevenueReport = () => {
   const dispatch = useDispatch();
@@ -40,7 +42,7 @@ const RevenueReport = () => {
 
   const exportToExcel = () => {
     const excelData = filteredOrders.map((order, index) => ({
-      "#": index + 1,
+      "Sl.no": index + 1,
       "Invoice No": order.invoiceNumber,
       Date: format(new Date(order.createdAt), "dd/MM/yyyy"),
       Customer: order.shippingInfo?.name || "—",
@@ -48,7 +50,6 @@ const RevenueReport = () => {
       "Discount (₹)": (order.discount || 0).toFixed(2),
       "SGST (₹)": (order.SGST || 0).toFixed(2),
       "CGST (₹)": (order.CGST || 0).toFixed(2),
-      Status: order.orderStatus,
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(excelData);
@@ -67,7 +68,7 @@ const RevenueReport = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "#", width: 70 },
+    { field: "id", headerName: "Sl.no", width: 70 },
     { field: "invoiceNumber", headerName: "Invoice No", width: 180 },
     {
       field: "date",
@@ -89,12 +90,6 @@ const RevenueReport = () => {
       width: 130,
       valueGetter: (params) => params.row.totalPrice.toFixed(2),
     },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 140,
-      valueGetter: (params) => params.row.orderStatus,
-    },
   ];
 
   const rows = filteredOrders.map((order, index) => ({
@@ -106,12 +101,12 @@ const RevenueReport = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Revenue Report</h2>
-        <button
+        <IconButton
           onClick={exportToExcel}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+          className="text-green-600 hover:text-green-700"
         >
-          Export Excel
-        </button>
+          <FileDownloadIcon />
+        </IconButton>
       </div>
 
       <div className="flex gap-4 mb-6">

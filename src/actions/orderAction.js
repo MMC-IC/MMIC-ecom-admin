@@ -1,147 +1,232 @@
-import { ALL_ORDERS_FAIL, ALL_ORDERS_REQUEST, ALL_ORDERS_SUCCESS, CLEAR_ERRORS, DELETE_ORDER_FAIL, DELETE_ORDER_REQUEST, DELETE_ORDER_SUCCESS, MY_ORDERS_FAIL, MY_ORDERS_REQUEST, MY_ORDERS_SUCCESS, NEW_ORDER_FAIL, NEW_ORDER_REQUEST, NEW_ORDER_SUCCESS, ORDER_DETAILS_FAIL, ORDER_DETAILS_REQUEST, ORDER_DETAILS_SUCCESS, PAYMENT_STATUS_FAIL, PAYMENT_STATUS_REQUEST, PAYMENT_STATUS_SUCCESS, UPDATE_ORDER_FAIL, UPDATE_ORDER_REQUEST, UPDATE_ORDER_SUCCESS } from "../constants/orderConstants";
+import {
+  ALL_ORDERS_FAIL,
+  ALL_ORDERS_REQUEST,
+  ALL_ORDERS_SUCCESS,
+  CLEAR_ERRORS,
+  DELETE_ORDER_FAIL,
+  DELETE_ORDER_REQUEST,
+  DELETE_ORDER_SUCCESS,
+  MY_ORDERS_FAIL,
+  MY_ORDERS_REQUEST,
+  MY_ORDERS_SUCCESS,
+  NEW_ORDER_FAIL,
+  NEW_ORDER_REQUEST,
+  NEW_ORDER_SUCCESS,
+  ORDER_DETAILS_FAIL,
+  ORDER_DETAILS_REQUEST,
+  ORDER_DETAILS_SUCCESS,
+  PAYMENT_STATUS_FAIL,
+  PAYMENT_STATUS_REQUEST,
+  PAYMENT_STATUS_SUCCESS,
+  UPDATE_ORDER_FAIL,
+  UPDATE_ORDER_REQUEST,
+  UPDATE_ORDER_SUCCESS,
+  ADMIN_RETURN_REQUEST,
+  ADMIN_RETURN_SUCCESS,
+  ADMIN_RETURN_FAIL,
+  APPROVE_RETURN_REQUEST,
+  APPROVE_RETURN_SUCCESS,
+  APPROVE_RETURN_FAIL,
+  REJECT_RETURN_REQUEST,
+  REJECT_RETURN_SUCCESS,
+  REJECT_RETURN_FAIL,
+} from "../constants/orderConstants";
 import { deleteCall, getCall, postCall, putCall } from "../api/HttpService";
 
 // New Order
 export const newOrder = (order) => async (dispatch) => {
-    try {
-        dispatch({ type: NEW_ORDER_REQUEST });
+  try {
+    dispatch({ type: NEW_ORDER_REQUEST });
 
-        const { data } = await postCall('/api/v1/order/new', order);
+    const { data } = await postCall("/api/v1/order/new", order);
 
-        dispatch({
-            type: NEW_ORDER_SUCCESS,
-            payload: data,
-        })
-
-    } catch (error) {
-        dispatch({
-            type: NEW_ORDER_FAIL,
-            payload: error.response.data.message,
-        });
-    }
+    dispatch({
+      type: NEW_ORDER_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: NEW_ORDER_FAIL,
+      payload: error.response.data.message,
+    });
+  }
 };
 
 // Get User Orders
 export const myOrders = () => async (dispatch) => {
-    try {
-        dispatch({ type: MY_ORDERS_REQUEST });
+  try {
+    dispatch({ type: MY_ORDERS_REQUEST });
 
-        const { data } = await getCall('/api/v1/orders/me');
+    const { data } = await getCall("/api/v1/orders/me");
 
-        dispatch({
-            type: MY_ORDERS_SUCCESS,
-            payload: data.orders,
-        })
-
-    } catch (error) {
-        dispatch({
-            type: MY_ORDERS_FAIL,
-            payload: error.response.data.message,
-        });
-    }
+    dispatch({
+      type: MY_ORDERS_SUCCESS,
+      payload: data.orders,
+    });
+  } catch (error) {
+    dispatch({
+      type: MY_ORDERS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
 };
 
 // Get Order Details
 export const getOrderDetails = (id) => async (dispatch) => {
-    try {
-        dispatch({ type: ORDER_DETAILS_REQUEST });
+  try {
+    dispatch({ type: ORDER_DETAILS_REQUEST });
 
-        const { data } = await getCall(`/api/v1/order/${id}`);
+    const { data } = await getCall(`/api/v1/order/${id}`);
 
-        dispatch({
-            type: ORDER_DETAILS_SUCCESS,
-            payload: data.order,
-        })
-
-    } catch (error) {
-        dispatch({
-            type: ORDER_DETAILS_FAIL,
-            payload: error.response.data.message,
-        });
-    }
+    dispatch({
+      type: ORDER_DETAILS_SUCCESS,
+      payload: data.order,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_DETAILS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
 };
 
 // Get Payment Status
 export const getPaymentStatus = (id) => async (dispatch) => {
-    try {
-        dispatch({ type: PAYMENT_STATUS_REQUEST });
+  try {
+    dispatch({ type: PAYMENT_STATUS_REQUEST });
 
-        const { data } = await getCall(`/api/v1/payment/status/${id}`);
+    const { data } = await getCall(`/api/v1/payment/status/${id}`);
 
-        dispatch({
-            type: PAYMENT_STATUS_SUCCESS,
-            payload: data.txn,
-        })
-
-    } catch (error) {
-        dispatch({
-            type: PAYMENT_STATUS_FAIL,
-            payload: error.response.data.message,
-        });
-    }
+    dispatch({
+      type: PAYMENT_STATUS_SUCCESS,
+      payload: data.txn,
+    });
+  } catch (error) {
+    dispatch({
+      type: PAYMENT_STATUS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
 };
 
 // Get All Orders ---ADMIN
 export const getAllOrders = () => async (dispatch) => {
-    try {
-        dispatch({ type: ALL_ORDERS_REQUEST });
+  try {
+    dispatch({ type: ALL_ORDERS_REQUEST });
 
-        const { data } = await getCall('/api/v1/admin/orders');
+    const { data } = await getCall("/api/v1/admin/orders");
 
-        dispatch({
-            type: ALL_ORDERS_SUCCESS,
-            payload: data.orders,
-        })
-
-    } catch (error) {
-        dispatch({
-            type: ALL_ORDERS_FAIL,
-            payload: error.response.data.message,
-        });
-    }
+    dispatch({
+      type: ALL_ORDERS_SUCCESS,
+      payload: data.orders,
+    });
+  } catch (error) {
+    dispatch({
+      type: ALL_ORDERS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
 };
 
 // Update Order ---ADMIN
-export const updateOrder = (id, order) => async (dispatch) => {
-    try {
-        dispatch({ type: UPDATE_ORDER_REQUEST });
-        
-        const { data } = await putCall(`/api/v1/admin/order/${id}`, order);
+export const updateOrder = (id, itemId, order) => async (dispatch) => {
+  try {
+    dispatch({ type: UPDATE_ORDER_REQUEST });
 
-        dispatch({
-            type: UPDATE_ORDER_SUCCESS,
-            payload: data.success,
-        });
+    const { data } = await putCall(
+      `/api/v1/admin/order/${id}/${itemId}`,
+      order
+    );
 
-    } catch (error) {
-        dispatch({
-            type: UPDATE_ORDER_FAIL,
-            payload: error.response.data.message,
-        });
-    }
+    dispatch({
+      type: UPDATE_ORDER_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    dispatch({
+      type: UPDATE_ORDER_FAIL,
+      payload: error.response.data.message,
+    });
+  }
 };
 
 // Delete Order ---ADMIN
 export const deleteOrder = (id) => async (dispatch) => {
-    try {
-        dispatch({ type: DELETE_ORDER_REQUEST });
+  try {
+    dispatch({ type: DELETE_ORDER_REQUEST });
 
-        const { data } = await deleteCall(`/api/v1/admin/order/${id}`);
+    const { data } = await deleteCall(`/api/v1/admin/order/${id}`);
 
-        dispatch({
-            type: DELETE_ORDER_SUCCESS,
-            payload: data.success,
-        })
+    dispatch({
+      type: DELETE_ORDER_SUCCESS,
+      payload: data.success,
+    });
+  } catch (error) {
+    dispatch({
+      type: DELETE_ORDER_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 
-    } catch (error) {
-        dispatch({
-            type: DELETE_ORDER_FAIL,
-            payload: error.response.data.message,
-        });
-    }
+// 🔹 Get all return requested items (ADMIN)
+export const getReturnRequests = () => async (dispatch) => {
+  try {
+    dispatch({ type: ADMIN_RETURN_REQUEST });
+
+    const { data } = await getCall("/api/v1/admin/returns");
+
+    dispatch({
+      type: ADMIN_RETURN_SUCCESS,
+      payload: data.items,
+    });
+  } catch (error) {
+    dispatch({
+      type: ADMIN_RETURN_FAIL,
+      payload: error.response?.data?.message || error.message,
+    });
+  }
+};
+
+// 🔹 Approve return (restore stock)
+export const approveReturn = (orderId, itemId) => async (dispatch) => {
+  try {
+    dispatch({ type: APPROVE_RETURN_REQUEST });
+
+    const { data } = await putCall(
+      `/api/v1/admin/return/approve/${orderId}/${itemId}`
+    );
+
+    dispatch({ type: APPROVE_RETURN_SUCCESS });
+    return data;
+  } catch (error) {
+    dispatch({
+      type: APPROVE_RETURN_FAIL,
+      payload: error.response?.data?.message || error.message,
+    });
+  }
+};
+
+// 🔹 Reject return
+export const rejectReturn = (orderId, itemId) => async (dispatch) => {
+  try {
+    dispatch({ type: REJECT_RETURN_REQUEST });
+
+    const { data } = await putCall(
+      `/api/v1/admin/return/reject/${orderId}/${itemId}`
+    );
+
+    dispatch({ type: REJECT_RETURN_SUCCESS });
+    return data;
+  } catch (error) {
+    dispatch({
+      type: REJECT_RETURN_FAIL,
+      payload: error.response?.data?.message || error.message,
+    });
+  }
 };
 
 // Clear All Errors
 export const clearErrors = () => (dispatch) => {
-    dispatch({ type: CLEAR_ERRORS });
-}
+  dispatch({ type: CLEAR_ERRORS });
+};

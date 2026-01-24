@@ -39,11 +39,16 @@ import NotFound from "./components/NotFound";
 import ProductPPTGenerator from "./components/Admin/ProductPPTGenerator";
 import AddBrand from "./components/Admin/AddBrand";
 import NewProductXLS from "./components/Admin/NewProductXLS";
-import OrderStatusReport from "./components/Admin/OrderStatusReport";
+import OrderSummaryReport from "./components/Admin/OrderSummaryReport";
 import RevenueReport from "./components/Admin/RevenueReport";
 import InvoiceReport from "./components/Admin/InvoiceReport";
 import ProductSalesReport from "./components/Admin/ProductSalesReport";
 import SupplierDetails from "./components/Admin/SupplierDetails";
+import SupplierSalesReport from "./components/Admin/SupplierSalesReport";
+import AdminReturnList from "./components/Admin/AdminReturnList";
+import AdminReturnAction from "./components/Admin/AdminReturnAction";
+import AdminSupplierReturnList from "./components/Admin/AdminSupplierReturnList";
+import AdminSupplierReturnAction from "./components/Admin/AdminSupplierReturnAction";
 
 function App() {
   const dispatch = useDispatch();
@@ -82,7 +87,7 @@ function App() {
   }, [pathname]);
 
   // disable right click
-  window.addEventListener("contextmenu", (e) => e.preventDefault());
+  //window.addEventListener("contextmenu", (e) => e.preventDefault());
   window.addEventListener("keydown", (e) => {
     if (e.keyCode === 123) e.preventDefault();
     if (e.ctrlKey && e.shiftKey && e.keyCode === 73) e.preventDefault();
@@ -259,10 +264,54 @@ function App() {
         ></Route>
 
         <Route
-          path="/admin/add_brand"
+          path="/admin/returns"
           element={
             <ProtectedRoute isAdmin={true}>
               <Dashboard activeTab={2}>
+                <AdminReturnList />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/return/:orderId/:itemId"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={1}>
+                <AdminReturnAction />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/supplier-returns"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={2}>
+                <AdminSupplierReturnList />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/supplier-return/:id"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={1}>
+                <AdminSupplierReturnAction />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/add_brand"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={5}>
                 <AddBrand />
               </Dashboard>
             </ProtectedRoute>
@@ -273,7 +322,7 @@ function App() {
           path="/admin/brand/:id"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={2}>
+              <Dashboard activeTab={5}>
                 <AddBrand />
               </Dashboard>
             </ProtectedRoute>
@@ -328,7 +377,7 @@ function App() {
           path="/admin/users"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={5}>
+              <Dashboard activeTab={7}>
                 <UserTable />
               </Dashboard>
             </ProtectedRoute>
@@ -339,7 +388,7 @@ function App() {
           path="/admin/user/:id"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={5}>
+              <Dashboard activeTab={7}>
                 <UpdateUser />
               </Dashboard>
             </ProtectedRoute>
@@ -350,7 +399,7 @@ function App() {
           path="/admin/reviews"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={6}>
+              <Dashboard activeTab={8}>
                 <ReviewsTable />
               </Dashboard>
             </ProtectedRoute>
@@ -361,7 +410,7 @@ function App() {
           path="/admin/add_supplier"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={7}>
+              <Dashboard activeTab={6}>
                 <SupplierDetails />
               </Dashboard>
             </ProtectedRoute>
@@ -372,7 +421,7 @@ function App() {
           path="/admin/supplier/:id"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={7}>
+              <Dashboard activeTab={6}>
                 <SupplierDetails />
               </Dashboard>
             </ProtectedRoute>
@@ -383,8 +432,8 @@ function App() {
           path="/admin/report/orderStatus"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={8}>
-                <OrderStatusReport />
+              <Dashboard activeTab={9}>
+                <OrderSummaryReport />
               </Dashboard>
             </ProtectedRoute>
           }
@@ -394,7 +443,7 @@ function App() {
           path="/admin/report/revenue"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={8}>
+              <Dashboard activeTab={9}>
                 <RevenueReport />
               </Dashboard>
             </ProtectedRoute>
@@ -405,7 +454,7 @@ function App() {
           path="/admin/report/invoices"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={8}>
+              <Dashboard activeTab={9}>
                 <InvoiceReport />
               </Dashboard>
             </ProtectedRoute>
@@ -416,8 +465,19 @@ function App() {
           path="/admin/report/productSales"
           element={
             <ProtectedRoute isAdmin={true}>
-              <Dashboard activeTab={8}>
+              <Dashboard activeTab={9}>
                 <ProductSalesReport />
+              </Dashboard>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/report/supplier-sales"
+          element={
+            <ProtectedRoute isAdmin={true}>
+              <Dashboard activeTab={9}>
+                <SupplierSalesReport />
               </Dashboard>
             </ProtectedRoute>
           }

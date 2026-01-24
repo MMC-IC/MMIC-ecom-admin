@@ -15,6 +15,7 @@ import { getAdminBrands } from "../../actions/brandAction";
 import { categories } from "../../utils/constants";
 import MetaData from "../Layouts/MetaData";
 import BackdropLoader from "../Layouts/BackdropLoader";
+import { getSuppliers } from "../../actions/supplierAction";
 
 const UpdateProduct = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,10 @@ const UpdateProduct = () => {
   const { isUpdated, loading: productUpdateLoading } = useSelector(
     (state) => state.product
   );
-  const { brands } = useSelector((state) => state.brands);
+  const { brands, error: brandsError } = useSelector((state) => state.brands);
+  const { suppliers, error: suppliersError } = useSelector(
+    (state) => state.suppliers
+  );
 
   const [formData, setFormData] = useState({
     name: "",
@@ -41,6 +45,7 @@ const UpdateProduct = () => {
     baseStock: 0,
     warranty: 0,
     brand: "",
+    supplier: "",
     tags: [],
     specs: [],
     variants: [],
@@ -65,6 +70,7 @@ const UpdateProduct = () => {
     baseStock,
     warranty,
     brand,
+    supplier,
     tags,
     specs,
     variants,
@@ -97,6 +103,7 @@ const UpdateProduct = () => {
         baseStock: product.stock,
         warranty: product.warranty,
         brand: product.brand_code,
+        supplier: product.supplier,
         tags: product.tags,
         specs: product.specifications,
         variants: product.variants,
@@ -110,6 +117,12 @@ const UpdateProduct = () => {
   useEffect(() => {
     if (brands.length === 0) {
       dispatch(getAdminBrands());
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (suppliers.length === 0) {
+      dispatch(getSuppliers());
     }
   }, [dispatch]);
 
@@ -218,6 +231,7 @@ const UpdateProduct = () => {
     data.set("stock", formData.baseStock);
     data.set("warranty", formData.warranty);
     data.set("brand_code", formData.brand);
+    data.set("supplier", formData.supplier);
     data.set("youtube", formData.youtubeLink);
     data.set("morelink", formData.moreLink);
     images.forEach((img) => data.append("images", img));
@@ -230,7 +244,7 @@ const UpdateProduct = () => {
     );
     dispatch(updateProduct(id, data));
   };
-
+  console.log(suppliers);
   return (
     <>
       <MetaData title="Admin: Update Product | MMC" />
@@ -247,6 +261,7 @@ const UpdateProduct = () => {
             <div className="flex flex-col gap-3 m-2 sm:w-1/2">
               <TextField
                 label="Name"
+                name="name"
                 variant="outlined"
                 size="small"
                 required
@@ -255,6 +270,7 @@ const UpdateProduct = () => {
               />
               <TextField
                 label="Category"
+                name="category"
                 select
                 fullWidth
                 variant="outlined"
@@ -275,6 +291,7 @@ const UpdateProduct = () => {
             <div className="flex flex-col gap-3 m-2 sm:w-1/2">
               <TextField
                 label="Brand"
+                name="brand"
                 select
                 fullWidth
                 variant="outlined"
@@ -298,6 +315,7 @@ const UpdateProduct = () => {
               <div className="flex justify-between">
                 <TextField
                   label="Price"
+                  name="price"
                   type="number"
                   variant="outlined"
                   size="small"
@@ -312,6 +330,7 @@ const UpdateProduct = () => {
                 />
                 <TextField
                   label="Cutted Price"
+                  name="cuttedPrice"
                   type="number"
                   variant="outlined"
                   size="small"
@@ -330,6 +349,7 @@ const UpdateProduct = () => {
               <div className="flex justify-between">
                 <TextField
                   label="Stock"
+                  name="baseStock"
                   type="number"
                   variant="outlined"
                   size="small"
@@ -345,6 +365,7 @@ const UpdateProduct = () => {
 
                 <TextField
                   label="Warranty"
+                  name="warranty"
                   type="number"
                   variant="outlined"
                   size="small"
@@ -360,11 +381,33 @@ const UpdateProduct = () => {
               </div>
             </div>
           </div>
+          <div className="flex flex-col sm:flex-row mb-3">
+            <div className="flex flex-col gap-3 m-2 sm:w-1/2">
+              <TextField
+                label="Supplier"
+                name="supplier"
+                select
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                value={supplier}
+                onChange={handleInputChange}
+              >
+                {suppliers.map((el, i) => (
+                  <MenuItem value={el._id} key={el._id}>
+                    {el.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
+          </div>
           <h2 className="font-medium text-lg mb-3">Product Summary</h2>
           <div className="flex flex-col gap-y-4 mb-3">
             <div className="flex flex-col gap-2">
               <TextField
                 label="Short Description"
+                name="description"
                 multiline
                 rows={3}
                 required
@@ -441,6 +484,7 @@ const UpdateProduct = () => {
             <div className="flex flex-col gap-3 m-2 sm:w-1/2">
               <TextField
                 label="YouTube Link"
+                name="youtubeLink"
                 variant="outlined"
                 size="small"
                 placeholder="https://www.youtube.com/watch?v=..."
@@ -449,6 +493,7 @@ const UpdateProduct = () => {
               />
               <TextField
                 label="More Link *"
+                name="moreLink"
                 variant="outlined"
                 size="small"
                 placeholder="Enter More Link"
@@ -604,7 +649,6 @@ const UpdateProduct = () => {
           </div>
         </div>
       </form>
-      ;
     </>
   );
 };

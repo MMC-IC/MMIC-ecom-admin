@@ -20,6 +20,9 @@ import {
   SUPPLIER_DETAILS_REQUEST,
   SUPPLIER_DETAILS_SUCCESS,
   SUPPLIER_DETAILS_FAIL,
+  SUPPLIER_SALES_REQUEST,
+  SUPPLIER_SALES_SUCCESS,
+  SUPPLIER_SALES_FAIL,
 } from "../constants/supplierConstants";
 
 export const getSuppliers = () => async (dispatch) => {
@@ -113,6 +116,25 @@ export const getSupplierDetails = (id) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: SUPPLIER_DETAILS_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+// Get Supplier sales report
+export const getSupplierSales = () => async (dispatch) => {
+  try {
+    dispatch({ type: SUPPLIER_SALES_REQUEST });
+
+    const { data } = await getCall(`/api/v1/admin/supplier-sales`);
+
+    dispatch({
+      type: SUPPLIER_SALES_SUCCESS,
+      payload: data.report,
+    });
+  } catch (error) {
+    dispatch({
+      type: SUPPLIER_SALES_FAIL,
       payload: error.response.data.message,
     });
   }

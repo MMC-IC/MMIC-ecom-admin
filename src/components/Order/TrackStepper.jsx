@@ -1,55 +1,106 @@
-import { Step, StepLabel, Stepper } from '@mui/material';
-import CircleIcon from '@mui/icons-material/Circle';
-import { formatDate } from '../../utils/functions';
+import CircleIcon from "@mui/icons-material/Circle";
+import { formatDate } from "../../utils/functions";
 
-const TrackStepper = ({ activeStep, orderOn, shippedAt, deliveredAt }) => {
+const TrackStepper = ({ statusHistory = [] }) => {
+  // Extract statuses
+  const statuses = statusHistory.map((s) => s.status);
+  console.log(statuses);
 
-    const steps = [
-        {
-            status: "Ordered",
-            dt: formatDate(orderOn),
-        },
-        {
-            status: "Shipped",
-            dt: formatDate(shippedAt),
-        },
-        {
-            status: "Delivered",
-            dt: formatDate(deliveredAt),
-        },
-    ];
+  const hasOrdered = statuses.includes("Ordered");
+  const hasShipped = statuses.includes("Shipped");
+  console.log(hasShipped);
+  const hasDelivered = statuses.includes("Delivered");
 
-    const completedIcon = <span className="text-primary-green animate-pulse"><CircleIcon sx={{ fontSize: "16px" }} /></span>;
-    const pendingIcon = <span className="text-gray-400"><CircleIcon sx={{ fontSize: "16px" }} /></span>;
+  const cancelled = statusHistory.find((s) => s.status === "Cancelled");
 
-    return (
-        <Stepper activeStep={activeStep} alternativeLabel>
-            {steps.map((item, index) => (
-                <Step
-                    key={index}
-                    active={activeStep === index ? true : false}
-                    completed={activeStep >= index ? true : false}
-                >
-                    <StepLabel
-                        icon={
-                            activeStep >= index ? completedIcon : pendingIcon
-                        }
-                    >
-                        {activeStep >= index ? (
-                            <div className="flex flex-col">
-                                <span className="text-primary-green font-medium">{item.status}</span>
-                                {item.dt !== "Invalid Date" && (
-                                    <span className="text-primary-green font-medium">{item.dt}</span>
-                                )}
-                            </div>
-                        ) : (
-                            <span className="text-gray-400 font-medium">{item.status}</span>
-                        )}
-                    </StepLabel>
-                </Step>
-            ))}
-        </Stepper>
-    );
+  const returnRequested = statusHistory.find(
+    (s) => s.status === "Return Requested"
+  );
+
+  const returned = statusHistory.find((s) => s.status === "Returned");
+
+  const returnRejected = statusHistory.find(
+    (s) => s.status === "Return Rejected"
+  );
+
+  const Step = ({ active, label, date }) => (
+    <div className="flex flex-col items-center min-w-[90px]">
+      <CircleIcon
+        sx={{ fontSize: 16 }}
+        className={active ? "text-primary-green" : "text-gray-400"}
+      />
+      <span
+        className={`text-sm font-medium ${
+          active ? "text-primary-green" : "text-gray-400"
+        }`}
+      >
+        {label}
+      </span>
+      {active && date && (
+        <span className="text-xs text-primary-green">{formatDate(date)}</span>
+      )}
+    </div>
+  );
+
+  const Line = ({ active }) => (
+    <div
+      className={`flex-1 h-[2px] ${
+        active ? "bg-primary-green" : "bg-gray-300"
+      }`}
+    />
+  );
+
+  return (
+    <div className="flex flex-col gap-2">
+      {/* PIPELINE */}
+      <div className="flex items-center justify-between">
+        <Step
+          active={hasOrdered}
+          label="Ordered"
+          date={statusHistory.find((s) => s.status === "Ordered")?.date}
+        />
+        <Line active={hasShipped || hasDelivered} />
+        <Step
+          active={hasShipped}
+          label="Shipped"
+          date={statusHistory.find((s) => s.status === "Shipped")?.date}
+        />
+        <Line active={hasDelivered} />
+        <Step
+          active={hasDelivered}
+          label="Delivered"
+          date={statusHistory.find((s) => s.status === "Delivered")?.date}
+        />
+      </div>
+
+      {/* CANCEL INFO */}
+      {cancelled && (
+        <div className="flex flex-col items-center text-red-600 mt-1">
+          <CircleIcon sx={{ fontSize: 14 }} />
+          <span className="font-medium">Order Cancelled</span>
+          <span className="text-xs">{formatDate(cancelled.date)}</span>
+        </div>
+      )}
+
+      {/* RETURN INFO */}
+      {(returnRequested || returned || returnRejected) && (
+        <div className="flex flex-col items-center text-orange-600 mt-1">
+          <span className="font-medium">
+            {returned
+              ? "Returned"
+              : returnRejected
+              ? "Return Rejected"
+              : "Return Requested"}
+          </span>
+          <span className="text-xs">
+            {formatDate(
+              returned?.date || returnRejected?.date || returnRequested?.date
+            )}
+          </span>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default TrackStepper;

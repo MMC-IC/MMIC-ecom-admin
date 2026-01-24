@@ -12,6 +12,7 @@ import { categories } from "../../utils/constants";
 import MetaData from "../Layouts/MetaData";
 import BackdropLoader from "../Layouts/BackdropLoader";
 import { getAdminBrands } from "../../actions/brandAction";
+import { getSuppliers } from "../../actions/supplierAction";
 
 const NewProduct = () => {
   const dispatch = useDispatch();
@@ -19,8 +20,9 @@ const NewProduct = () => {
   const navigate = useNavigate();
 
   const { loading, success, error } = useSelector((state) => state.newProduct);
-  const { brands, error: getBrandsError } = useSelector(
-    (state) => state.brands
+  const { brands, error: brandsError } = useSelector((state) => state.brands);
+  const { suppliers, error: suppliersError } = useSelector(
+    (state) => state.suppliers
   );
 
   /* const [highlights, setHighlights] = useState([]);
@@ -38,6 +40,7 @@ const NewProduct = () => {
   const [category, setCategory] = useState("");
   const [baseStock, setBaseStock] = useState(0);
   const [warranty, setWarranty] = useState(0);
+  const [supplier, setSupplier] = useState("");
   const [brand, setBrand] = useState("");
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
@@ -234,6 +237,7 @@ const NewProduct = () => {
     formData.set("stock", baseStock);
     formData.set("warranty", warranty);
     formData.set("brand_code", brand);
+    formData.set("supplier", supplier);
     //formData.set("logo", logo);
 
     images.forEach((image) => {
@@ -262,26 +266,33 @@ const NewProduct = () => {
   };
 
   useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
+    const anyError = error || brandsError || suppliersError;
+
+    if (anyError) {
+      enqueueSnackbar(anyError, { variant: "error" });
       dispatch(clearErrors());
     }
+  }, [error, brandsError, suppliersError, enqueueSnackbar, dispatch]);
+
+  useEffect(() => {
     if (success) {
       enqueueSnackbar("Product Created", { variant: "success" });
       dispatch({ type: NEW_PRODUCT_RESET });
       navigate("/admin/products");
     }
-  }, [dispatch, error, success, navigate, enqueueSnackbar]);
+  }, [dispatch, success, navigate, enqueueSnackbar]);
 
   useEffect(() => {
-    if (error) {
-      enqueueSnackbar(error, { variant: "error" });
-      dispatch(clearErrors());
-    }
     if (!brands || brands.length === 0) {
       dispatch(getAdminBrands());
     }
-  }, [dispatch, error, navigate, enqueueSnackbar]);
+  }, [dispatch, navigate, enqueueSnackbar]);
+
+  useEffect(() => {
+    if (!suppliers || suppliers.length === 0) {
+      dispatch(getSuppliers());
+    }
+  }, [dispatch, navigate, enqueueSnackbar]);
 
   return (
     <>
@@ -413,6 +424,26 @@ const NewProduct = () => {
               </div>
             </div>
           </div>
+          <div className="flex flex-col sm:flex-row mb-3">
+            <div className="flex flex-col gap-3 m-2 sm:w-1/2">
+              <TextField
+                label="Supplier"
+                select
+                fullWidth
+                variant="outlined"
+                size="small"
+                required
+                value={supplier}
+                onChange={(e) => setSupplier(e.target.value)}
+              >
+                {suppliers.map((el, i) => (
+                  <MenuItem value={el._id} key={el._id}>
+                    {el.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
+          </div>
           <h2 className="font-medium text-lg mb-3">Product Summary</h2>
           <div className="flex flex-col gap-y-4 mb-3">
             <div className="flex flex-col gap-2">
@@ -516,7 +547,9 @@ const NewProduct = () => {
                     <input
                       type="checkbox"
                       value={tag}
-                      checked={tag === 'New Arrival' ? true : tags.includes(tag)}
+                      checked={
+                        tag === "New Arrival" ? true : tags.includes(tag)
+                      }
                       onChange={handleTagChange}
                       className="accent-primary-blue"
                     />

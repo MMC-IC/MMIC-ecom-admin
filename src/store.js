@@ -26,6 +26,7 @@ import {
   orderDetailsReducer,
   orderReducer,
   paymentStatusReducer,
+  returnOrdersReducer,
 } from "./reducers/orderReducer";
 import { wishlistReducer } from "./reducers/wishlistReducer";
 import {
@@ -40,7 +41,9 @@ import {
   supplierDetailsReducer,
   supplierReducer,
   suppliersReducer,
+  supplierSalesReducer,
 } from "./reducers/supplierReducer";
+import { supplierReturnReducer } from "./reducers/supplierReturnReducer";
 
 const reducer = combineReducers({
   user: userReducer,
@@ -73,6 +76,9 @@ const reducer = combineReducers({
   suppliers: suppliersReducer,
   newSupplier: newSupplierReducer,
   supplierDetails: supplierDetailsReducer,
+  supplierSales: supplierSalesReducer,
+  returnOrders: returnOrdersReducer,
+  supplierReturns: supplierReturnReducer,
 });
 
 let initialState = {

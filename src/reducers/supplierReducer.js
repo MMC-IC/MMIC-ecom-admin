@@ -19,6 +19,9 @@ import {
   SUPPLIER_DETAILS_REQUEST,
   SUPPLIER_DETAILS_SUCCESS,
   SUPPLIER_DETAILS_FAIL,
+  SUPPLIER_SALES_REQUEST,
+  SUPPLIER_SALES_SUCCESS,
+  SUPPLIER_SALES_FAIL,
 } from "../constants/supplierConstants";
 
 export const suppliersReducer = (
@@ -167,6 +170,41 @@ export const supplierReducer = (state = {}, { type, payload }) => {
       return {
         ...state,
         isDeleted: false,
+      };
+    case CLEAR_ERRORS:
+      return {
+        ...state,
+        error: null,
+      };
+    default:
+      return state;
+  }
+};
+
+export const supplierSalesReducer = (
+  state = {
+    loading: false,
+    sales: [],
+    error: null,
+  },
+  { type, payload }
+) => {
+  switch (type) {
+    case SUPPLIER_SALES_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case SUPPLIER_SALES_SUCCESS:
+      return {
+        loading: false,
+        sales: payload,
+      };
+    case SUPPLIER_SALES_FAIL:
+      return {
+        ...state,
+        loading: false,
+        error: payload,
       };
     case CLEAR_ERRORS:
       return {
