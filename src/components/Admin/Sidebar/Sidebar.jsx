@@ -37,6 +37,75 @@ const Sidebar = ({ setToggleSidebar }) => {
   };
 
   const isActive = (path) => location.pathname === path;
+  const navMenu = [
+    {
+      icon: <EqualizerIcon />,
+      label: "Dashboard",
+      ref: "/admin/dashboard",
+    },
+    {
+      icon: <ShoppingBagIcon />,
+      label: "Orders",
+      ref: "/admin/orders",
+    },
+    {
+      icon: <AddBoxIcon />,
+      label: "Add Brand",
+      ref: "/admin/add_brand",
+    },
+    {
+      icon: <InventoryIcon />,
+      label: "Products",
+      ref: "/admin/products",
+    },
+    {
+      icon: <AddBoxIcon />,
+      label: "Add Product",
+      ref: "/admin/new_product",
+    },
+    {
+      icon: <GroupIcon />,
+      label: "Customers",
+      ref: "/admin/users",
+    },
+    {
+      icon: <ReviewsIcon />,
+      label: "Reviews",
+      ref: "/admin/reviews",
+    },
+    {
+      icon: <AddBoxIcon />,
+      label: "Add Supplier",
+      ref: "/admin/add_supplier",
+    },
+    {
+      label: "Reports",
+      isDropdown: true,
+      icon: <EqualizerIcon />,
+      children: [
+        {
+          label: "Order Status Report",
+          ref: "/admin/report/orderStatus",
+        },
+        {
+          label: "Revenue Report",
+          ref: "/admin/report/revenue",
+        },
+        {
+          label: "Invoice Report",
+          ref: "/admin/report/invoices",
+        },
+        {
+          label: "Product Sales Report",
+          ref: "/admin/report/productSales",
+        },
+      ],
+    },
+    {
+      icon: <LogoutIcon />,
+      label: "Logout",
+    },
+  ];
 
   return (
     <aside className="sidebar z-10 sm:z-0 block min-h-screen fixed left-0 pb-14 max-h-screen w-3/4 sm:w-1/5 bg-gray-800 text-white overflow-x-hidden border-r">
